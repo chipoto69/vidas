@@ -1,0 +1,65 @@
+{
+  "name": "video2ascii",
+  "version": "1.2.0",
+  "description": "WebGL2-powered real-time video to ASCII art converter for React. 60fps GPU-accelerated rendering with mouse effects, ripples, and audio reactivity.",
+  "author": "VIDAS Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chipoto69/vidas.git",
+    "directory": "video2ascii"
+  },
+  "homepage": "https://github.com/chipoto69/vidas#readme",
+  "bugs": {
+    "url": "https://github.com/chipoto69/vidas/issues"
+  },
+  "keywords": [
+    "ascii",
+    "ascii-art",
+    "video",
+    "webgl",
+    "webgl2",
+    "react",
+    "canvas",
+    "shader",
+    "glsl",
+    "real-time",
+    "graphics",
+    "visualization",
+    "creative-coding",
+    "generative-art"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "assets"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint src/",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "react": "^18",
+    "react-dom": "^18",
+    "tsup": "^8",
+    "typescript": "^5"
+  }
+}
