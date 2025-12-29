@@ -435,11 +435,15 @@ function useVideoToAscii(options = {}) {
       cancelAnimationFrame(animationRef.current);
     };
   }, [initWebGL, render]);
+  const charsetRef = useRef(charset);
   useEffect(() => {
-    if (videoRef.current && videoRef.current.readyState >= 1) {
-      initWebGL();
+    if (charset !== charsetRef.current) {
+      charsetRef.current = charset;
+      if (videoRef.current && videoRef.current.readyState >= 1) {
+        initWebGL();
+      }
     }
-  }, [initWebGL]);
+  }, [charset, initWebGL]);
   useEffect(() => {
     if (!numColumns || !containerRef.current) return;
     const container = containerRef.current;

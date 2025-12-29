@@ -463,11 +463,15 @@ function useVideoToAscii(options = {}) {
       cancelAnimationFrame(animationRef.current);
     };
   }, [initWebGL, render]);
+  const charsetRef = (0, import_react.useRef)(charset);
   (0, import_react.useEffect)(() => {
-    if (videoRef.current && videoRef.current.readyState >= 1) {
-      initWebGL();
+    if (charset !== charsetRef.current) {
+      charsetRef.current = charset;
+      if (videoRef.current && videoRef.current.readyState >= 1) {
+        initWebGL();
+      }
     }
-  }, [initWebGL]);
+  }, [charset, initWebGL]);
   (0, import_react.useEffect)(() => {
     if (!numColumns || !containerRef.current) return;
     const container = containerRef.current;
