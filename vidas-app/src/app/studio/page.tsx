@@ -62,16 +62,81 @@ export default function StudioPage() {
     try {
       setError(null);
       setIsLoading(true);
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      stream.getTracks().forEach(track => track.stop());
       
-      setInputMode('camera');
-      setVideoSrc('camera');
-      setIsLoading(false);
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { width: 1280, height: 720, facingMode: 'user' } 
+      });
+      
+      // Create a video element to capture the stream
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.muted = true;
+      video.playsInline = true;
+      
+      await video.play();
+      
+      // Use MediaRecorder to create a blob URL that Video2Ascii can use
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+      const chunks: Blob[] = [];
+      
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+      
+      // Record a short segment then create looping blob
+      mediaRecorder.start();
+      
+      // For live camera, we need to continuously update
+      // Create a canvas-based approach for real-time
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth || 1280;
+      canvas.height = video.videoHeight || 720;
+      const ctx = canvas.getContext('2d');
+      
+      // Create a MediaStream from canvas for continuous capture
+      const canvasStream = canvas.captureStream(30);
+      const recorder = new MediaRecorder(canvasStream, { mimeType: 'video/webm' });
+      const videoChunks: Blob[] = [];
+      
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) videoChunks.push(e.data);
+      };
+      
+      // Draw video to canvas continuously
+      const drawFrame = () => {
+        if (ctx && video.readyState >= 2) {
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        }
+        requestAnimationFrame(drawFrame);
+      };
+      drawFrame();
+      
+      recorder.start(100); // Collect data every 100ms
+      
+      // After 500ms, create initial blob URL
+      setTimeout(() => {
+        recorder.stop();
+        setTimeout(() => {
+          if (videoChunks.length > 0) {
+            const blob = new Blob(videoChunks, { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            setVideoSrc(url);
+            setInputMode('camera');
+          }
+          setIsLoading(false);
+        }, 100);
+      }, 500);
+      
+      // Store cleanup function
+      (window as Window & { __cameraCleanup?: () => void }).__cameraCleanup = () => {
+        stream.getTracks().forEach(track => track.stop());
+        video.remove();
+      };
+      
     } catch (err) {
       setIsLoading(false);
       console.error(err);
-      setError('Camera access denied or not found.');
+      setError('Camera access denied. Please allow camera permissions and try again.');
     }
   }, []);
 
