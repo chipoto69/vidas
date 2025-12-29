@@ -355,12 +355,17 @@ export function useVideoToAscii(
     };
   }, [initWebGL, render]);
 
-  // Reinitialize when config changes (numColumns, brightness, etc.)
+  // Only reinitialize when charset changes (needs new atlas texture)
+  // Other props like brightness are updated in render loop
+  const charsetRef = useRef(charset);
   useEffect(() => {
-    if (videoRef.current && videoRef.current.readyState >= 1) {
-      initWebGL();
+    if (charset !== charsetRef.current) {
+      charsetRef.current = charset;
+      if (videoRef.current && videoRef.current.readyState >= 1) {
+        initWebGL();
+      }
     }
-  }, [initWebGL]);
+  }, [charset, initWebGL]);
 
   // Handle container resize when numColumns is used
   useEffect(() => {
