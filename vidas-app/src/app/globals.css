@@ -1,22 +1,47 @@
 @import "tailwindcss";
 
 :root {
-  --void-charcoal: #0E0E11;
-  --graphite-glass: #1C1C21;
-  --bone-white: #F2F2F2;
-  --ash-grey: #A8A8B0;
-  --muted-light: #6B6B75;
-  --acid-lime: #CCFF00;
-  --electric-violet: #6E44FF;
-  --signal-orange: #FF4800;
+  /* OKLCH Color Palette - Perceptually uniform */
+  --void: oklch(8% 0.015 280);
+  --surface: oklch(14% 0.012 280);
+  --surface-elevated: oklch(18% 0.01 280);
+  --border: oklch(25% 0.015 280);
+  --border-subtle: oklch(20% 0.01 280);
   
-  --background: var(--void-charcoal);
-  --foreground: var(--bone-white);
-  --surface: var(--graphite-glass);
-  --muted: var(--ash-grey);
-  --accent: var(--acid-lime);
-  --premium: var(--electric-violet);
-  --error: var(--signal-orange);
+  /* Text hierarchy */
+  --text-primary: oklch(95% 0 0);
+  --text-secondary: oklch(72% 0.01 280);
+  --text-muted: oklch(55% 0.015 280);
+  
+  /* Accent - Lime (warmer, more visible) */
+  --accent: oklch(88% 0.28 128);
+  --accent-hover: oklch(92% 0.32 128);
+  --accent-muted: oklch(75% 0.22 128);
+  --accent-glow: oklch(88% 0.28 128 / 0.4);
+  
+  /* Premium - Violet */
+  --premium: oklch(62% 0.24 295);
+  --premium-hover: oklch(68% 0.26 295);
+  --premium-muted: oklch(50% 0.18 295);
+  
+  /* Semantic */
+  --success: oklch(72% 0.18 145);
+  --warning: oklch(82% 0.16 85);
+  --error: oklch(62% 0.22 25);
+  
+  /* Legacy mappings for compatibility */
+  --void-charcoal: var(--void);
+  --graphite-glass: var(--surface);
+  --bone-white: var(--text-primary);
+  --ash-grey: var(--text-secondary);
+  --muted-light: var(--text-muted);
+  --acid-lime: var(--accent);
+  --electric-violet: var(--premium);
+  --signal-orange: var(--error);
+  
+  --background: var(--void);
+  --foreground: var(--text-primary);
+  --muted: var(--text-secondary);
 }
 
 @theme inline {
