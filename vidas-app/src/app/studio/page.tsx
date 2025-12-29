@@ -67,33 +67,17 @@ export default function StudioPage() {
         video: { width: 1280, height: 720, facingMode: 'user' } 
       });
       
-      // Create a video element to capture the stream
       const video = document.createElement('video');
       video.srcObject = stream;
       video.muted = true;
       video.playsInline = true;
-      
       await video.play();
       
-      // Use MediaRecorder to create a blob URL that Video2Ascii can use
-      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-      const chunks: Blob[] = [];
-      
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunks.push(e.data);
-      };
-      
-      // Record a short segment then create looping blob
-      mediaRecorder.start();
-      
-      // For live camera, we need to continuously update
-      // Create a canvas-based approach for real-time
       const canvas = document.createElement('canvas');
       canvas.width = video.videoWidth || 1280;
       canvas.height = video.videoHeight || 720;
       const ctx = canvas.getContext('2d');
       
-      // Create a MediaStream from canvas for continuous capture
       const canvasStream = canvas.captureStream(30);
       const recorder = new MediaRecorder(canvasStream, { mimeType: 'video/webm' });
       const videoChunks: Blob[] = [];
@@ -102,7 +86,6 @@ export default function StudioPage() {
         if (e.data.size > 0) videoChunks.push(e.data);
       };
       
-      // Draw video to canvas continuously
       const drawFrame = () => {
         if (ctx && video.readyState >= 2) {
           ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -110,10 +93,8 @@ export default function StudioPage() {
         requestAnimationFrame(drawFrame);
       };
       drawFrame();
+      recorder.start(100);
       
-      recorder.start(100); // Collect data every 100ms
-      
-      // After 500ms, create initial blob URL
       setTimeout(() => {
         recorder.stop();
         setTimeout(() => {
@@ -127,7 +108,6 @@ export default function StudioPage() {
         }, 100);
       }, 500);
       
-      // Store cleanup function
       (window as Window & { __cameraCleanup?: () => void }).__cameraCleanup = () => {
         stream.getTracks().forEach(track => track.stop());
         video.remove();
